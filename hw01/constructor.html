@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ООП</title>
+
+    <script>
+
+        // Базовый класс
+        function Phone(model, color) {
+
+            this.model = model || 'Модель не выбрана';
+            this.color = color || 'Цвет не указан';
+
+            // this.getModel = function () {
+            //     console.log(this.model);
+            // }
+        }
+
+        Phone.prototype.getModel = function () {
+            console.log('Информация о телефоне: ', this.model, this.color);
+        };
+
+        //Создадим класс на основе базового и расширим его
+        function MyPhone(model, color, memory) {
+            Phone.call(this, model, color); // База
+            this.memory = memory || 'Объем памяти не указан'; // Добавили новое свойство
+
+            // данное описанием мы инкапсулируем функцию, и при попытки вызвать ее (см.
+            // пример 1), вызовется базовый метод
+            function getModel() {
+                console.log(this.model);
+            }
+
+            // Переопределим (Закомментируйте строчку ниже и понаблюдайте за результатом
+            // примера 1)
+            this.getModel = getModel;
+        }
+
+        // В данном случае, медод записывает в _proto_ а конструктором (constructor)
+        // является Phone. Это легко заметить, "заглянув" в объект в консоли.
+        MyPhone.prototype = Object.create(Phone.prototype);
+        MyPhone.prototype.constructor = Phone;
+
+        MyPhone.prototype.getMemory = function () {
+            return this.memory;
+        };
+
+        var newPhone = new MyPhone('iPhone', 'silver', '64Gb');
+        var emptyPhone = new MyPhone('', '', '');
+
+        // Пример 1
+        newPhone.getModel();
+
+        console.log(newPhone);
+        console.log(emptyPhone);
+        console.log(emptyPhone.getMemory());
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
