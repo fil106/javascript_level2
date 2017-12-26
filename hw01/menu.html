@@ -64,10 +64,6 @@
 
         };
 
-        Menu.prototype.remove = function () {
-
-        };
-
         // Описываем класс пунктов меню
         function MenuItem(my_href, my_name) {
 
@@ -89,18 +85,24 @@
 
         //******Варианты вывода нашего меню*******
         // Вариант №1
-        var menu_1 = new MenuItem('/', 'Главная');
-        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
-        var menu_3 = new MenuItem('/contacts/', 'Контакты');
+		function createMenu() {
 
-        var menu_items = [menu_1, menu_2, menu_3];
-        var menu = new Menu('my_menu', 'my_class', menu_items);
+	    	Container.call(this);
 
-        window.onload = function () {
+	    	var menu_1 = new MenuItem('/', 'Главная');
+	        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
+	        var menu_3 = new MenuItem('/contacts/', 'Контакты');
+	        var menu_items = [menu_1, menu_2, menu_3];
+	        var menu = new Menu('my_id_' + COUNT++, 'my_class', menu_items);
 
-            
+	        document.getElementById('menu').innerHTML += menu.render();
 
-        };
+	    }
+
+	    function remove(id) {
+	    	document.getElementById('menu').removeChild(id);
+	    }
+
 
         // Вариант №2 - более изящный
         // window.onload = function () {
@@ -117,23 +119,7 @@
         // разметку а после уже исполнить наш код. Чтобы не прибегать к этой конструкции,
         // можно тэг <script> поставить перед закрывающим </body>
 
-        function createMenu() {
 
-	    	Container.call(this);
-
-	    	var menu_1 = new MenuItem('/', 'Главная');
-	        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
-	        var menu_3 = new MenuItem('/contacts/', 'Контакты');
-	        var menu_items = [menu_1, menu_2, menu_3];
-	        var menu = new Menu('my_id' + COUNT++, 'my_class', menu_items);
-
-	        document.getElementById('menu').innerHTML += menu.render();
-
-	    }
-
-	    function remove(id) {
-	    	document.getElementById('menu').removeChild(id);
-	    }
 
     </script>
 </head>
