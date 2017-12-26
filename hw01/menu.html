@@ -4,36 +4,44 @@
     <meta charset="UTF-8">
     <title>Menu</title>
     <script>
+    	var COUNT = 1;
+
         // Описываем базовый класс
         function Container() {
+
+        	/* Параметры */
             this.id = '';
             this.className = '';
             this.htmlCode = '';
+
         }
 
+        //метод в классе Container для фиг пойми чего
         Container.prototype.render = function () {
-            return this.htmlCode;
-        };
 
-        Container.prototype.deleteMenu = function() {
-            console.log(menu.id);
-//            document.getElementById(menu.id).innerHTML = '';
+            return this.htmlCode; //возвращаем параметр htmlCode
+
         };
 
         // Описываем класс меню
         function Menu(my_id, my_class, my_items) {
-            Container.call(this);
 
+            Container.call(this);  //Этой записью мы наследуемся от нашего базового класса
+
+            /* Параметры */
             this.id = my_id;
             this.className = my_class;
             this.items = my_items;
-            this.deleteButton = "<button class=\"delete_menu\">Удалить меню</button>";
+            this.deleteButton = '<button onclick="remove(' + this.id + ')">Удалить меню</button>';
+
         }
 
-        Menu.prototype = Object.create(Container.prototype);
-        Menu.prototype.constructor = Menu;
+        Menu.prototype = Object.create(Container.prototype); //передаем в класс 'Menu' прототип класса 'Container'
+        Menu.prototype.constructor = Menu; //Если не сделать такую запись, то при создании экземпляра класса, будет использоваться родительский конструктор.
 
+        //метод в классе Menu для отрисовки меню
         Menu.prototype.render = function () {
+
             var result = '<ul class="' + this.className + '" id="' + this.id + '">';
             this.items.forEach(function (item) {
                 result += item.render();
@@ -50,16 +58,24 @@
             //
             // Результат будет одинаковый
 
+			result += this.deleteButton;
             result += '</ul>';
-            result += this.deleteButton;
             return result;
+
+        };
+
+        Menu.prototype.remove = function () {
+
         };
 
         // Описываем класс пунктов меню
         function MenuItem(my_href, my_name) {
-            Container.call(this);
+
+            Container.call(this); //Этой записью мы наследуемся от нашего базового класса
+
             this.href = my_href;
             this.name = my_name;
+
         }
 
         MenuItem.prototype = Object.create(Container.prototype);
@@ -79,12 +95,10 @@
 
         var menu_items = [menu_1, menu_2, menu_3];
         var menu = new Menu('my_menu', 'my_class', menu_items);
-        var menu1 = new Menu('my_menu_1', 'my_class_1', menu_items);
 
         window.onload = function () {
 
-            document.getElementById('menu').innerHTML += menu.render();
-            document.getElementById('menu').innerHTML += menu1.render();
+            
 
         };
 
@@ -103,9 +117,29 @@
         // разметку а после уже исполнить наш код. Чтобы не прибегать к этой конструкции,
         // можно тэг <script> поставить перед закрывающим </body>
 
+        function createMenu() {
+
+	    	Container.call(this);
+
+	    	var menu_1 = new MenuItem('/', 'Главная');
+	        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
+	        var menu_3 = new MenuItem('/contacts/', 'Контакты');
+	        var menu_items = [menu_1, menu_2, menu_3];
+	        var menu = new Menu('my_id' + COUNT++, 'my_class', menu_items);
+
+	        document.getElementById('menu').innerHTML += menu.render();
+
+	    }
+
+	    function remove(id) {
+	    	document.getElementById('menu').removeChild(id);
+	    }
+
     </script>
 </head>
 <body>
-    <div id="menu"></div>
+    <div id="menu">
+    	<button onclick="createMenu()">Добавить меню</button>
+    </div>
 </body>
 </html>
