@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Menu</title>
     <script>
-    	var COUNT = 1;
 
         // Описываем базовый класс
         function Container() {
@@ -23,6 +22,15 @@
 
         };
 
+        Container.prototype.remove = function (id) {
+            id = id || this.id; // Если передали внешний id, то будем искать его, иначе - внутренний
+
+            var elem = document.getElementById(id);
+
+            if (elem)
+                elem.parentNode.removeChild(elem);
+        };
+
         // Описываем класс меню
         function Menu(my_id, my_class, my_items) {
 
@@ -32,7 +40,6 @@
             this.id = my_id;
             this.className = my_class;
             this.items = my_items;
-            this.deleteButton = '<button onclick="remove(' + this.id + ')">Удалить меню</button>';
 
         }
 
@@ -43,25 +50,35 @@
         Menu.prototype.render = function () {
 
             var result = '<ul class="' + this.className + '" id="' + this.id + '">';
-            this.items.forEach(function (item) {
-                result += item.render();
-            });
+//            this.items.forEach(function (item) {
+//                result += item.render();
+//            });
 
             // Также можно использовать и другую конструкцию, например на случай
             // с объектами.
-            //
-            // for (var i = 0; i < this.items.length; i++) {
-            //     if(this.items[i] instanceof MenuItem){
-            //         result += this.items[i].render();
-            //     }
-            // }
-            //
+
+            for (var item in this.items) {
+                if (this.items.hasOwnProperty(item) && (this.items[item] instanceof MenuItem || this.items[item] instanceof SubMenu)) {
+                    result += this.items[item].render();
+                }
+            }
+
             // Результат будет одинаковый
 
-			result += this.deleteButton;
             result += '</ul>';
             return result;
 
+        };
+
+        function SubMenu(myId, myClass, myItems) {
+            Menu.call(this, myId, myClass, myItems);
+        }
+
+        SubMenu.prototype = Object.create(Menu.prototype);
+        SubMenu.prototype.constructor = SubMenu;
+
+        SubMenu.prototype.render = function () {
+            return '<li>' + Menu.prototype.render.call(this) + '</li>';
         };
 
         // Описываем класс пунктов меню
@@ -89,18 +106,19 @@
 
 	    	Container.call(this);
 
-	    	var menu_1 = new MenuItem('/', 'Главная');
-	        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
-	        var menu_3 = new MenuItem('/contacts/', 'Контакты');
-	        var menu_items = [menu_1, menu_2, menu_3];
-	        var menu = new Menu('my_id_' + COUNT++, 'my_class', menu_items);
+            var menu = new Menu('my_menu', 'my_menu', [
+                new MenuItem('/', 'Главная'),
+                new MenuItem('/about/', 'О нас'),
+                new MenuItem('/contacts', 'Контакты'),
+                new SubMenu('submenu', 'submenu', [
+                    new MenuItem('/payment', 'Оплата'),
+                    new MenuItem('/delivery', "Доставка")
+                ]),
+                new MenuItem('/catalog', "Каталог")
+            ]);
 
 	        document.getElementById('menu').innerHTML += menu.render();
 
-	    }
-
-	    function remove(id) {
-	    	document.getElementById('menu').removeChild(id);
 	    }
 
 
@@ -124,8 +142,27 @@
     </script>
 </head>
 <body>
-    <div id="menu">
-    	<button onclick="createMenu()">Добавить меню</button>
-    </div>
+    <button id="create">Добавить меню</button>
+    <button id="remove">Удалить меню</button>
+    <div id="menu"></div>
+
+    <script>
+        var menu = new Menu('my_menu', 'my_menu', [
+            new MenuItem('/', 'Главная'),
+            new MenuItem('/about/', 'О нас'),
+            new MenuItem('/contacts', 'Контакты'),
+            new SubMenu('submenu', 'submenu', [
+                new MenuItem('/payment', 'Оплата'),
+                new MenuItem('/delivery', "Доставка")
+            ]),
+            new MenuItem('/catalog', "Каталог")
+        ]);
+
+        document.getElementById('menu').innerHTML = menu.render();
+
+
+        document.getElementById('create').addEventListener('click', function() {document.getElementById('menu').innerHTML = menu.render();});
+        document.getElementById('remove').addEventListener('click', function() {menu.remove()});
+    </script>
 </body>
 </html>
