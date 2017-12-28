@@ -3,24 +3,55 @@ window.onload = main;
 function Gallery(idGallery, classGallary) {
     this.idGallery = idGallery;
     this.classGallary = classGallary;
-    this.htmlCode = '<h2>Это меню</h2>';
+    this.prevBtn = '<img src="../img/arrow-left.png" class="arrow prev">';
+    this.nextBtn = '<img src="../img/arrow-right.png" class="arrow next">';
+    this.htmlCode = '';
 }
 
 Gallery.prototype.render = function() {
-    return this.htmlCode += this.idGallery;
+
 };
 
-function main() {
-    // var images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg'];
-    // var gallery = createGallery(images);
-    //
-    // document.getElementsByClassName('container')[0].appendChild(gallery);
-    // document.getElementsByClassName('gallery_list')[0].addEventListener('click', thumbClick);
-    // document.getElementsByClassName('next')[0].addEventListener('click', nextClick);
-    // document.getElementsByClassName('prev')[0].addEventListener('click', prevClick);
+function GalleryMainView(classMainView) {
+    Gallery.call(this);
 
-    my_gallary = new Gallery('my_id', 'my_class');
-    document.getElementsByClassName('container')[0].innerHTML += my_gallary.render();
+    this.classMainView = classMainView;
+}
+
+GalleryMainView.prototype.render = function() {
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function main() {
+    var images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg'];
+    var gallery = createGallery(images);
+
+    document.getElementsByClassName('container')[0].appendChild(gallery);
+    document.getElementsByClassName('gallery_list')[0].addEventListener('click', thumbClick);
+    document.getElementsByClassName('next')[0].addEventListener('click', nextClick);
+    document.getElementsByClassName('prev')[0].addEventListener('click', prevClick);
+
+    // my_gallary = new Gallery('my_id', 'my_class');
+    // document.getElementsByClassName('container')[0].innerHTML += my_gallary.render();
 }
 
 function createGallery(arr) {
