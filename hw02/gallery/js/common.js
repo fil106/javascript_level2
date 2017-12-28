@@ -1,11 +1,73 @@
 window.onload = main;
 
+
+/*ajax class for get our images from json file*/
+function AjaxGallery() {
+    this.images = {'small': [], 'big': []};
+    this.xhr = null;
+
+    if(window.XMLHttpRequest) {
+        xhr = new XMLHttpRequest();
+    }
+
+}
+
+/*sending ajax to selected file*/
+AjaxGallery.prototype.ajaxSend = function(type, file) {
+
+    xhr.onreadystatechange = this.ajaxPulling;
+    xhr.open(type, file, true);
+    xhr.send(null);
+
+};
+
+/*get answer from server or file*/
+AjaxGallery.prototype.ajaxPulling = function() {
+
+    /*check for
+    * 0-запрос не инициализирован
+    * 1-загрузка
+    * 2-запрос принят
+    * 3-обмен данными
+    * 4-запрос выполнен
+    * */
+    if(xhr.readyState === 4) {
+        /*check mistakes from server*/
+        if(xhr.status === 200) {
+            console.log("Изображения успешно получены!");
+        }
+    } else {
+        console.log("Получение изображений...");
+    }
+
+};
+
+AjaxGallery.prototype.getImages = function() {
+
+    var stringJson = xhr.responseText;
+    var objJson = JSON.parse(stringJson);
+    var smallImgLength = objJson.images.small.length;
+    var bigImgLength = objJson.images.big.length;
+
+    for(var i = 0; i < smallImgLength; i++) {
+        this.images.small[i] = objJson.images.small[i];
+    }
+
+    for(var j = 0; j < bigImgLength; j++) {
+        this.images.big[j] = objJson.images.big[j];
+    }
+
+    console.log(this.images);
+};
+
 function Gallery(idGallery, classGallary) {
+
     this.idGallery = idGallery;
     this.classGallary = classGallary;
     this.prevBtn = '<img src="../img/arrow-left.png" class="arrow prev">';
     this.nextBtn = '<img src="../img/arrow-right.png" class="arrow next">';
     this.htmlCode = '';
+
 }
 
 Gallery.prototype.render = function() {
@@ -13,9 +75,11 @@ Gallery.prototype.render = function() {
 };
 
 function GalleryMainView(classMainView) {
+
     Gallery.call(this);
 
     this.classMainView = classMainView;
+
 }
 
 GalleryMainView.prototype.render = function() {
@@ -42,16 +106,20 @@ GalleryMainView.prototype.render = function() {
 
 
 function main() {
-    var images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg'];
-    var gallery = createGallery(images);
-
-    document.getElementsByClassName('container')[0].appendChild(gallery);
-    document.getElementsByClassName('gallery_list')[0].addEventListener('click', thumbClick);
-    document.getElementsByClassName('next')[0].addEventListener('click', nextClick);
-    document.getElementsByClassName('prev')[0].addEventListener('click', prevClick);
+    // var images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg'];
+    // var gallery = createGallery(images);
+    //
+    // document.getElementsByClassName('container')[0].appendChild(gallery);
+    // document.getElementsByClassName('gallery_list')[0].addEventListener('click', thumbClick);
+    // document.getElementsByClassName('next')[0].addEventListener('click', nextClick);
+    // document.getElementsByClassName('prev')[0].addEventListener('click', prevClick);
 
     // my_gallary = new Gallery('my_id', 'my_class');
     // document.getElementsByClassName('container')[0].innerHTML += my_gallary.render();
+
+    var ajax = new AjaxGallery();
+    ajax.ajaxSend('POST', 'package.json');
+
 }
 
 function createGallery(arr) {
