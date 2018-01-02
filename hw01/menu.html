@@ -4,62 +4,91 @@
     <meta charset="UTF-8">
     <title>Menu</title>
     <script>
+
         // Описываем базовый класс
         function Container() {
+
+        	/* Параметры */
             this.id = '';
             this.className = '';
             this.htmlCode = '';
+
         }
 
+        //метод в классе Container для фиг пойми чего
         Container.prototype.render = function () {
-            return this.htmlCode;
+
+            return this.htmlCode; //возвращаем параметр htmlCode
+
         };
 
-        Container.prototype.deleteMenu = function() {
-            console.log(menu.id);
-//            document.getElementById(menu.id).innerHTML = '';
+        Container.prototype.remove = function (id) {
+            id = id || this.id; // Если передали внешний id, то будем искать его, иначе - внутренний
+
+            var elem = document.getElementById(id);
+
+            if (elem)
+                elem.parentNode.removeChild(elem);
         };
 
         // Описываем класс меню
         function Menu(my_id, my_class, my_items) {
-            Container.call(this);
 
+            Container.call(this);  //Этой записью мы наследуемся от нашего базового класса
+
+            /* Параметры */
             this.id = my_id;
             this.className = my_class;
             this.items = my_items;
-            this.deleteButton = "<button class=\"delete_menu\">Удалить меню</button>";
+
         }
 
-        Menu.prototype = Object.create(Container.prototype);
-        Menu.prototype.constructor = Menu;
+        Menu.prototype = Object.create(Container.prototype); //передаем в класс 'Menu' прототип класса 'Container'
+        Menu.prototype.constructor = Menu; //Если не сделать такую запись, то при создании экземпляра класса, будет использоваться родительский конструктор.
 
+        //метод в классе Menu для отрисовки меню
         Menu.prototype.render = function () {
+
             var result = '<ul class="' + this.className + '" id="' + this.id + '">';
-            this.items.forEach(function (item) {
-                result += item.render();
-            });
+//            this.items.forEach(function (item) {
+//                result += item.render();
+//            });
 
             // Также можно использовать и другую конструкцию, например на случай
             // с объектами.
-            //
-            // for (var i = 0; i < this.items.length; i++) {
-            //     if(this.items[i] instanceof MenuItem){
-            //         result += this.items[i].render();
-            //     }
-            // }
-            //
+
+            for (var item in this.items) {
+                if (this.items.hasOwnProperty(item) && (this.items[item] instanceof MenuItem || this.items[item] instanceof SubMenu)) {
+                    result += this.items[item].render();
+                }
+            }
+
             // Результат будет одинаковый
 
             result += '</ul>';
-            result += this.deleteButton;
             return result;
+
+        };
+
+        function SubMenu(myId, myClass, myItems) {
+            Menu.call(this, myId, myClass, myItems);
+        }
+
+        SubMenu.prototype = Object.create(Menu.prototype);
+        SubMenu.prototype.constructor = SubMenu;
+
+        SubMenu.prototype.render = function () {
+            return '<li>' + Menu.prototype.render.call(this) + '</li>';
         };
 
         // Описываем класс пунктов меню
         function MenuItem(my_href, my_name) {
-            Container.call(this);
+
+            Container.call(this); //Этой записью мы наследуемся от нашего базового класса
+
             this.href = my_href;
             this.name = my_name;
+
         }
 
         MenuItem.prototype = Object.create(Container.prototype);
@@ -73,20 +102,25 @@
 
         //******Варианты вывода нашего меню*******
         // Вариант №1
-        var menu_1 = new MenuItem('/', 'Главная');
-        var menu_2 = new MenuItem('/catalogue/', 'Каталог');
-        var menu_3 = new MenuItem('/contacts/', 'Контакты');
+		function createMenu() {
 
-        var menu_items = [menu_1, menu_2, menu_3];
-        var menu = new Menu('my_menu', 'my_class', menu_items);
-        var menu1 = new Menu('my_menu_1', 'my_class_1', menu_items);
+	    	Container.call(this);
 
-        window.onload = function () {
+            var menu = new Menu('my_menu', 'my_menu', [
+                new MenuItem('/', 'Главная'),
+                new MenuItem('/about/', 'О нас'),
+                new MenuItem('/contacts', 'Контакты'),
+                new SubMenu('submenu', 'submenu', [
+                    new MenuItem('/payment', 'Оплата'),
+                    new MenuItem('/delivery', "Доставка")
+                ]),
+                new MenuItem('/catalog', "Каталог")
+            ]);
 
-            document.getElementById('menu').innerHTML += menu.render();
-            document.getElementById('menu').innerHTML += menu1.render();
+	        document.getElementById('menu').innerHTML += menu.render();
 
-        };
+	    }
+
 
         // Вариант №2 - более изящный
         // window.onload = function () {
@@ -103,9 +137,32 @@
         // разметку а после уже исполнить наш код. Чтобы не прибегать к этой конструкции,
         // можно тэг <script> поставить перед закрывающим </body>
 
+
+
     </script>
 </head>
 <body>
+    <button id="create">Добавить меню</button>
+    <button id="remove">Удалить меню</button>
     <div id="menu"></div>
+
+    <script>
+        var menu = new Menu('my_menu', 'my_menu', [
+            new MenuItem('/', 'Главная'),
+            new MenuItem('/about/', 'О нас'),
+            new MenuItem('/contacts', 'Контакты'),
+            new SubMenu('submenu', 'submenu', [
+                new MenuItem('/payment', 'Оплата'),
+                new MenuItem('/delivery', "Доставка")
+            ]),
+            new MenuItem('/catalog', "Каталог")
+        ]);
+
+        document.getElementById('menu').innerHTML = menu.render();
+
+
+        document.getElementById('create').addEventListener('click', function() {document.getElementById('menu').innerHTML = menu.render();});
+        document.getElementById('remove').addEventListener('click', function() {menu.remove()});
+    </script>
 </body>
 </html>
