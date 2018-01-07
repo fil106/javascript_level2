@@ -76,16 +76,16 @@
 	<div class="container">
 		<form id="call-back" action="#" method="GET">
 
-			<label for="#name">Ваше имя:*</label>
+			<label for="name">Ваше имя:*</label>
 			<input id="name" class='field' name="name" type="text" placeholder="Иван" maxlength="40">
 
-			<label for="#phone">Ваш мобильный телефон:*</label>
+			<label for="phone">Ваш мобильный телефон:*</label>
 			<input id="phone" class='field' name="phone" type="text" placeholder="+7(___)___-____" maxlength="15">
 
-			<label for="#email">Ваш email:*</label>
+			<label for="email">Ваш email:*</label>
 			<input id="email" class='field' name="email" type="text" placeholder="mymail@mail.ru" maxlength="80">
 
-			<label for="#message">Ваше сообщение:*</label>
+			<label for="message">Ваше сообщение:*</label>
 			<textarea id="message" class='field' name="message" type="text" placeholder="Текст сообщения..." rows="5" maxlength="500"></textarea>
 
 			<p class="notif">Поля с * - обязательные!</p>
@@ -99,20 +99,20 @@
 		//Задание №1 'У вас есть большой текст, в котором для обозначения диалогов используются одинарные кавычки. Придумать шаблон, который меняет одинарные кавычки на двойные.'
 		console.log('---Задание 1---');
 
-		var str = "Какой-то текст много текста 'начался диалог диалог много диалога' опять текст много текста 'начался диалог диалог много диалога'";
-		var result = str.replace(/'/ig, '"');
+		var str1 = "Какой-то текст много текста 'начался диалог диалог много диалога' опять текст много текста 'начался диалог диалог много диалога'";
+		var result1 = str1.replace(/'/ig, '"');
 
-		console.log(result);
+		console.log(result1);
 
 		//Задание №2 'Улучшить шаблон таким образом, чтобы конструкции типа aren’t не меняли одинарную кавычку на двойную.
 		console.log('---Задание 2---');
 
-		var str = "Какой-то текст 'МНОГО' текста 'начался диалог диало'г мн'ого ди'алога' опять текст много текста 'начался диалог диалог много диалога'";
-		var result = str.replace(/\s'/ig, ' "');	//этой регуляркой заменяем все ' у которых есть пробел перед '
-		var result = result.replace(/'\s/ig, '" ');	//этой регуляркой заменяем все ' у которых есть пробел после '
-		var result = result.replace(/'$/ig, '"');	//этой регуляркой заменяем ' если она находится в конце строки
+		var str2 = "Какой-то текст 'МНОГО' текста 'начался диалог диало'г мн'ого ди'алога' опять текст много текста 'начался диалог диалог много диалога'";
+		var result2 = str2.replace(/\s'/ig, ' "');	//этой регуляркой заменяем все ' у которых есть пробел перед '
+		result3 = result2.replace(/'\s/ig, '" ');	//этой регуляркой заменяем все ' у которых есть пробел после '
+		result4 = result3.replace(/'$/ig, '"');	//этой регуляркой заменяем ' если она находится в конце строки
 
-		console.log(result);
+		console.log(result4);
 
 		//Задание №3
 		console.log('---Задание 3---');
@@ -129,7 +129,6 @@
 
 				deleteElements('.error');
 
-				var form = document.querySelector('#call-back');
 				var name = document.querySelector('#name');
 				var phone = document.querySelector('#phone');
 				var email = document.querySelector('#email');
@@ -151,33 +150,33 @@
 				//проверка поля ИМЯ
 				if(!(/[а-яА-ЯёЁ]+/).test(name.value)) {
 
-					var error = generateError('Допускается ввод только русских букв!');
+					var errorName = generateError('Допускается ввод только русских букв!');
 					name.style.border = '1px solid red';
-					name.parentElement.insertBefore(error.cloneNode(true), name);
+					name.parentElement.insertBefore(errorName.cloneNode(true), name);
 
 				}
 
 				//проверка поля номер телефона
 				if(!(/[+7]+[(][0-9]{3}[)][0-9]{3}[-][0-9]{4}/).test(phone.value)) {
 
-					var error = generateError('Допускается ввод номера телефона строго в формате +7(___)___-____');
+					var errorPhone = generateError('Допускается ввод номера телефона строго в формате +7(___)___-____');
 					phone.style.border = '1px solid red';
-					phone.parentElement.insertBefore(error.cloneNode(true), phone);
+					phone.parentElement.insertBefore(errorPhone.cloneNode(true), phone);
 
 				}
 
 				//проверка поля email
 				if(!(/^([a-zA-Z0-9_-]+\.)*[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*\.[a-z]{2,6}$/).test(email.value)) {
 
-					var error = generateError('Примеры email: mymail@mail.ru, или my.mail@mail.ru, или my-mail@mail.ru');
+					var errorEmail = generateError('Примеры email: mymail@mail.ru, или my.mail@mail.ru, или my-mail@mail.ru');
 					email.style.border = '1px solid red';
-					email.parentElement.insertBefore(error.cloneNode(true), email);
+					email.parentElement.insertBefore(errorEmail.cloneNode(true), email);
 
 				}
 
 				console.log(name.value, phone.value, email.value, message.value);
 			});
-		}
+		};
 
 		function inputNameHandler(event) {
 			if((/[а-яё]/i).test(event.key)) {
