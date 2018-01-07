@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+</head>
+<body>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            if(window.XMLHttpRequest) {
+                var gallery = document.createElement('div');
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'imgs.json');
+
+                xhr.onreadystatechange = function() {
+                    if(xhr.status !== 200) return false;
+
+                    if(xhr.readyState === 4) {
+                        var resTxt = xhr.responseText;
+                        var resJson = JSON.parse(resTxt);
+
+                        var gal = new Gallery('my_id', 'my_class', 200);
+                        gallery.innerHTML = gal.render(resJson);
+                        document.getElementsByTagName('body')[0].appendChild(gallery);
+                    }
+                };
+
+                xhr.send();
+            }
+        };
+
+        function Gallery(id, cls, width) {
+            this.id = id;
+            this.cls = cls;
+            this.width = width;
+            this.html = '';
+        }
+
+        Gallery.prototype.render = function(resJson) {
+            this.html += '<ul id="' + this.id + '" class="' + this.cls + '">';
+
+                for(var i = 0; i < resJson.src.length; i++) {
+                    this.html += this.galleryItem(resJson.src[i]);
+                }
+
+            this.html += '</ul>';
+
+            return this.html;
+        };
+
+        Gallery.prototype.galleryItem = function(src) {
+            return '<li><img src="' + src + '" width="' + this.width + 'px"></li>';
+        };
+    </script>
+</body>
+</html>
