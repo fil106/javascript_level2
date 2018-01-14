@@ -9,22 +9,12 @@
         console.log(isPalindrome("level")); // logs 'true'
         console.log(isPalindrome("levels")); // logs 'false'
         console.log(isPalindrome("A car, a man, a maraca")); // logs 'true'
-        console.log(isPalindrome("Я иду с мечем судия")); // logs 'true'
-
-        //Варинат с prompt позволяет избавиться от toLowerCase в теле функции, даже replace сюда можно запихать
-		//var promp = prompt('Проверка на палиндром', 'Ваша фраза или слово');
-		//isPalindrome(promp.toLowerCase());
-
 
         function isPalindrome(a) {
-            // var b='';for(var i in a)b+=a[a.length-i-1];return d(a)==d(b)
-            // a=a.toLowerCase().replace(/\W/g,'');return a==a.split('').reverse().join('')
-            return(a=a.replace(/\W/g,'').toLowerCase())==a.split('').reverse().join('')
+            return(a=a.replace(/\W/g,'').toLowerCase())==a.split('').reverse().join('') //75 символов
+            return(a=a.toLowerCase().match(/\w/g))+''==a.reverse()                      //54 символа
         }
 
-//        function d(c) {
-//            return c.toLowerCase().replace(/\W/g,'')
-//        }
     </script>
 </body>
 </html>
