@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вкладки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .tabs {
+            display: block;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .tabs-head {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .tabs-head:hover {
+            cursor: pointer;
+        }
+
+        .tabs-head > div {
+            background-color: lightgreen;
+            padding: 5px 20px;
+            margin-right: 5px;
+        }
+
+        .tabs-head > div:last-child {
+            margin-right: 0px;
+        }
+
+        .tabs-head .active {
+            background-color: grey;
+        }
+
+        .tabs-page > div {
+            display: none;
+            padding: 10px;
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <div class="tabs-head">
+            <div class="tab active" tab="1">One</div>
+            <div class="tab" tab="2">Two</div>
+            <div class="tab" tab="3">Three</div>
+            <div class="tab" tab="4">Four</div>
+            <div class="tab" tab="5">Five</div>
+        </div>
+        <div class="tabs-page">
+            <div class="tab-page" tab="1">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet eum, ipsum natus nihil quos rerum voluptatem? Aspernatur deserunt ea maiores maxime, quisquam quod temporibus? Ad, aliquid at corporis cumque dolores eligendi enim esse ex exercitationem in ipsa laboriosam mollitia officiis perferendis quia repudiandae sapiente! Atque deserunt dolores eaque et facilis inventore laborum minima nesciunt nisi officia officiis perspiciatis quam, quisquam quod reiciendis, sunt unde velit. Alias amet ea fugiat libero mollitia odit totam voluptatem voluptatum. Aspernatur commodi dicta dolor dolorum est laborum obcaecati pariatur repellendus sapiente tenetur. Commodi delectus ea eaque expedita hic, natus odit, omnis temporibus tenetur ut vel?
+            </div>
+            <div class="tab-page" tab="2">
+                <img width="100%" src="https://www.sunhome.ru/i/wallpapers/200/planeta-zemlya-kartinka.960x540.jpg" alt="Image">
+            </div>
+            <div class="tab-page" tab="3">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis dolore illum iusto modi quos sint temporibus unde voluptatibus. Accusamus animi dolores, impedit iste iusto laborum mollitia neque, nesciunt officiis omnis porro possimus repudiandae suscipit totam voluptatem. Dicta, est ex exercitationem harum ipsam minima necessitatibus porro quibusdam, quidem, suscipit tempora ullam vero. Commodi, fuga rem. Architecto facilis nam omnis perferendis quasi?
+            </div>
+            <div class="tab-page" tab="4">4</div>
+            <div class="tab-page" tab="5">5</div>
+        </div>
+    </div>
+
+    <script src="lib/jquery-3.2.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var active = $('.active').attr('tab');
+            $('.tabs-page div[tab="' + active + '"]').slideDown(300);
+        });
+
+        $('.tab').on('click', function(){
+            var curr = this.getAttribute('tab');
+
+            deleteElements('.active');
+            this.classList.add('active');
+
+            $('.tab-page').slideUp(300);
+            $('.tabs-page div[tab="' + curr + '"]').slideDown(300);
+        });
+
+        function deleteElements(cls) {
+            var found = $(cls);
+
+            for(var i = 0; i < found.length; i++) {
+                found[i].classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
