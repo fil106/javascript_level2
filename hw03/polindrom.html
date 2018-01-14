@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Полиндром</title>
+</head>
+<body>
+    <script>
+        console.log(isPalindrome("level")); // logs 'true'
+        console.log(isPalindrome("levels")); // logs 'false'
+        console.log(isPalindrome("A car, a man, a maraca")); // logs 'true'
+
+        function isPalindrome(a) {
+            return(a=a.replace(/\W/g,'').toLowerCase())==a.split('').reverse().join('') //75 символов
+            return(a=a.toLowerCase().match(/\w/g))+''==a.reverse()                      //54 символа
+        }
+
+    </script>
+</body>
+</html>
