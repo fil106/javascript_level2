@@ -1,0 +1,26 @@
+{
+  "result": true,
+  "reviews": [
+    {
+      "user": 123,
+      "name": "Ivan",
+      "id": 1,
+      "message": "test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1 test 1",
+      "moderated": true
+    },
+    {
+      "user": 234,
+      "name": "Maria",
+      "id": 2,
+      "message": "test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2 test 2",
+      "moderated": true
+    },
+    {
+      "user": 345,
+      "name": "Test",
+      "id": 3,
+      "message": "test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3",
+      "moderated": false
+    }
+  ]
+}
