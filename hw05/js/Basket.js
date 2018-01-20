@@ -4,107 +4,119 @@ function Basket() {
     this.countGoods = 0;
     this.amount = 0;
 
+    this.classBasketItems = 'basket-items';
+    this.classBasketData = 'basket-data';
+    this.classDeleteBasketItem = 'remove-item';
+
     this.basketItems = [];
-    this.collectBasketItems(); // Загружаем товары, которые уже добавлены (json файл)
+    this.collectBasketItems();
 }
 
 Basket.prototype = Object.create(Container.prototype);
 Basket.prototype.constructor = Basket;
 
-//
-// TODO посмотреть метод render!
-//
-
-Basket.prototype.render = function (root) { // Генерация базовой разметки
+Basket.prototype.render = function (root) {
     var basketDiv = $('<div />', {
-        id: this.id,
-        text: 'Корзина'
+        id: this.id
     });
 
     var basketItemsDiv = $('<div />', {
-        id: this.id + '_items'
+        class: this.classBasketItems
     });
 
+    $('<h2>Корзина</h2>').appendTo(basketDiv);
     basketItemsDiv.appendTo(basketDiv);
     basketDiv.appendTo(root);
 };
 
-Basket.prototype.commentsRender = function(root) {
-    var commentsBlock = $('<div />', {class: 'comments'});
-    $('<h4>Комментарии:</h4>').appendTo(commentsBlock);
-    var ul = $('<ul />');
-
-    $.get({
-        url: './basket.json',
-        dataType: 'json',
-        success: function (data) {
-            var commentsJson = data.basket[0].comments;
-
-            for(var i in commentsJson) {
-                var li = $('<li />');
-                li.text(commentsJson[i].text);
-                li.appendTo(ul);
-            }
-        },
-        context: this
-    });
-
-    ul.appendTo(commentsBlock);
-    commentsBlock.appendTo(root);
-
+Basket.prototype.update = function (item) {
+  var update = false;
+  for (var index in this.basketItems) {
+    if (this.basketItems[index].id == item.id){
+      this.basketItems[index].quantity += item.quantity;
+      update = true;
+      break;
+    }
+  }
+  return update;
 };
 
-Basket.prototype.add = function (product, quantity, price) {
-    // console.log(product, quantity, price);
-    var basketItems = {
-      "id_product": product,
+Basket.prototype.add = function (idProduct, quantity, price, name) {
+    var basketItem = {
+      "name": name,
+      "id": idProduct,
+      "quantity": quantity,
       "price": price
     };
 
-    // for (var i = 1; i <= quantity; i++) {
-    //     this.countGoods++;
-    // }
+    if (this.update(basketItem) === false){
+      this.basketItems.push(basketItem);
+    }
 
-
-    // Немного модифицировал вышенаписанное
-    this.countGoods += +quantity;
-    this.amount += +price * +quantity;
-
-    this.basketItems.push(basketItems);
     this.refresh();
 };
 
+Basket.prototype.delete = function (idProduct) {
+  for (var index in this.basketItems) {
+    if (this.basketItems[index].id == idProduct){
+      this.basketItems.splice(index, 1);
+      break;
+    }
+  }
+
+  this.refresh();
+};
+
 Basket.prototype.refresh = function () {
-  var $basketDataDiv = $('#basket_data'); // тут была ошибка, вместо basket_data был basket_wrapper
-  $basketDataDiv.empty();
-  $basketDataDiv.append('<p>Всего товаров: ' + this.countGoods + '</p>');
-  $basketDataDiv.append('<p>Сумма: ' + this.amount + '</p>');
+  var basketDataDiv = $('<div />', {
+      class: this.classBasketData
+  });
+
+  var basketTable = $('<table />', {border: 1, width: '100%'});
+  var count = 0;
+  var amount = 0;
+
+  $('.basket-list').empty();
+  basketDataDiv.empty();
+  basketTable.empty();
+
+  $('.basket-list').append($('<h2>Корзина</h2>'));
+  $('<tr><th>Наименование</th><th>Количество</th><th>Стоимость</th><th>Действие</th></tr>').appendTo(basketTable);
+
+  for (var index in this.basketItems) {
+      this.htmlItem(this.basketItems[index]).appendTo(basketTable);
+
+      count += +this.basketItems[index].quantity;
+      amount += +this.basketItems[index].price * +this.basketItems[index].quantity;
+  }
+
+  this.countGoods = count;
+  this.amount = amount;
+
+  basketDataDiv.append(basketTable);
+  basketDataDiv.append('<p>Всего товаров: ' + this.countGoods + '</p>');
+  basketDataDiv.append('<p><b>Общая Сумма: ' + this.amount + '</b></p>');
+  $('.basket-list').append(basketDataDiv);
+};
+
+Basket.prototype.htmlItem = function (item) {
+  var result = $('<tr />');
+  $('<td />', {text: item.name}).appendTo(result);
+  $('<td />', {text: item.price + ' руб.'}).appendTo(result);
+  $('<td />', {text: item.quantity + ' шт.'}).appendTo(result);
+  $('<td><a href="#" data-id-product="' + item.id + '" class="' + this.classDeleteBasketItem + '">Удалить</a></td>').appendTo(result);
+  return result;
 };
 
 Basket.prototype.collectBasketItems = function () {
-  var appendId = '#' + this.id + '_items';
-
-  $.get({
-      url: './basket.json',
+  $.ajax({
+      url: 'ajax/getbasket.json',
       dataType: 'json',
       success: function (data) {
-          // Получаем и выводим начальные данные корзины
-          var basketData = $('<div />', {
-              id: 'basket_data'
-              // text: 'Text'
-          });
-
-          this.countGoods = data.basket.length;
-          this.amount = data.amount;
-
-          basketData.append('<p>Всего товаров: ' + this.countGoods + '</p>');
-          basketData.append('<p>Сумма: ' + this.amount + '</p>');
-
-          basketData.appendTo(appendId);
-
           for (var index in data.basket) {
               this.basketItems.push(data.basket[index]);
           }
+          this.refresh();
       },
       context: this
   });
